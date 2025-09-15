@@ -4,7 +4,64 @@ import AuthContext from "../AuthContext";
 
 function Sales() {
   const [showSaleModal, setShowSaleModal] = useState(false);
-  const [sales, setAllSalesData] = useState([]);
+  const [sales, setAllSalesData] = useState([
+    {
+      _id: "1",
+      ProductID: { name: "iPhone 15 Pro" },
+      StoreID: { name: "Mumbai Central" },
+      StockSold: 3,
+      SaleDate: "2024-01-16",
+      TotalSaleAmount: 248751
+    },
+    {
+      _id: "2",
+      ProductID: { name: "Samsung Galaxy S24" },
+      StoreID: { name: "Delhi NCR" },
+      StockSold: 2,
+      SaleDate: "2024-01-15",
+      TotalSaleAmount: 149234
+    },
+    {
+      _id: "3",
+      ProductID: { name: "MacBook Air M3" },
+      StoreID: { name: "Bangalore Tech" },
+      StockSold: 1,
+      SaleDate: "2024-01-14",
+      TotalSaleAmount: 107817
+    },
+    {
+      _id: "4",
+      ProductID: { name: "Sony WH-1000XM5" },
+      StoreID: { name: "Chennai Plaza" },
+      StockSold: 5,
+      SaleDate: "2024-01-13",
+      TotalSaleAmount: 165585
+    },
+    {
+      _id: "5",
+      ProductID: { name: "iPad Pro 12.9" },
+      StoreID: { name: "Pune Mall" },
+      StockSold: 2,
+      SaleDate: "2024-01-12",
+      TotalSaleAmount: 182434
+    },
+    {
+      _id: "6",
+      ProductID: { name: "Logitech MX Master 3" },
+      StoreID: { name: "Hyderabad Hub" },
+      StockSold: 8,
+      SaleDate: "2024-01-11",
+      TotalSaleAmount: 65736
+    },
+    {
+      _id: "7",
+      ProductID: { name: "Dell XPS 13" },
+      StoreID: { name: "Kolkata Center" },
+      StockSold: 1,
+      SaleDate: "2024-01-10",
+      TotalSaleAmount: 124500
+    }
+  ]);
   const [products, setAllProducts] = useState([]);
   const [stores, setAllStores] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
@@ -12,9 +69,10 @@ function Sales() {
   const authContext = useContext(AuthContext);
 
   useEffect(() => {
-    fetchSalesData();
-    fetchProductsData();
-    fetchStoresData();
+    // Commented out API calls to show hardcoded data
+    // fetchSalesData();
+    // fetchProductsData();
+    // fetchStoresData();
   }, [updatePage]);
 
   // Fetching Data of All Sales
@@ -57,8 +115,8 @@ function Sales() {
   };
 
   return (
-    <div className="col-span-12 lg:col-span-10  flex justify-center">
-      <div className=" flex flex-col gap-5 w-11/12">
+    <div className="col-span-12 lg:col-span-10 flex justify-center bg-gradient-to-r from-slate-900 via-slate-800 to-slate-100 min-h-screen">
+      <div className="flex flex-col gap-4 w-11/12 p-3">
         {showSaleModal && (
           <AddSale
             addSaleModalSetting={addSaleModalSetting}
@@ -68,15 +126,67 @@ function Sales() {
             authContext={authContext}
           />
         )}
+
+        {/* Statistics Cards */}
+        <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-xl p-4 shadow-lg">
+          <span className="font-semibold px-4 text-slate-800">Sales Overview</span>
+          <div className="flex flex-col md:flex-row justify-center items-stretch gap-4">
+            <div className="flex flex-col gap-2 p-4 w-full md:w-1/4 bg-gradient-to-br from-emerald-50 to-green-100 rounded-lg border border-emerald-200/50 shadow-sm min-h-[120px]">
+              <span className="font-semibold text-emerald-600 text-base">
+                Total Sales
+              </span>
+              <span className="font-semibold text-slate-700 text-base">
+                {sales.length}
+              </span>
+              <span className="font-thin text-slate-500 text-xs">
+                This month
+              </span>
+            </div>
+            <div className="flex flex-col gap-2 p-4 w-full md:w-1/4 sm:border-y-2 md:border-x-2 md:border-y-0 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200/50 shadow-sm min-h-[120px]">
+              <span className="font-semibold text-blue-600 text-base">
+                Total Revenue
+              </span>
+              <span className="font-semibold text-slate-700 text-base">
+                ₹{sales.reduce((sum, item) => sum + (item.TotalSaleAmount || 0), 0).toLocaleString('en-IN')}
+              </span>
+              <span className="font-thin text-slate-500 text-xs">
+                Total earned
+              </span>
+            </div>
+            <div className="flex flex-col gap-2 p-4 w-full md:w-1/4 sm:border-y-2 md:border-x-2 md:border-y-0 bg-gradient-to-br from-purple-50 to-violet-100 rounded-lg border border-purple-200/50 shadow-sm min-h-[120px]">
+              <span className="font-semibold text-purple-600 text-base">
+                Avg Sale
+              </span>
+              <span className="font-semibold text-slate-700 text-base">
+                ₹{Math.round(sales.reduce((sum, item) => sum + (item.TotalSaleAmount || 0), 0) / sales.length).toLocaleString('en-IN')}
+              </span>
+              <span className="font-thin text-slate-500 text-xs">
+                Per transaction
+              </span>
+            </div>
+            <div className="flex flex-col gap-2 p-4 w-full md:w-1/4 border-y-2 md:border-x-2 md:border-y-0 bg-gradient-to-br from-orange-50 to-amber-100 rounded-lg border border-orange-200/50 shadow-sm min-h-[120px]">
+              <span className="font-semibold text-orange-600 text-base">
+                Items Sold
+              </span>
+              <span className="font-semibold text-slate-700 text-base">
+                {sales.reduce((sum, item) => sum + (item.StockSold || 0), 0)}
+              </span>
+              <span className="font-thin text-slate-500 text-xs">
+                Units sold
+              </span>
+            </div>
+          </div>
+        </div>
+
         {/* Table  */}
-        <div className="overflow-x-auto rounded-lg border bg-white border-gray-200 ">
+        <div className="overflow-x-auto rounded-xl border bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border-slate-200/50 shadow-lg">
           <div className="flex justify-between pt-5 pb-3 px-3">
             <div className="flex gap-4 justify-center items-center ">
-              <span className="font-bold">Sales</span>
+              <span className="font-bold text-slate-800">Sales</span>
             </div>
             <div className="flex gap-4">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 text-xs  rounded"
+                className="bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white font-bold p-2 text-xs rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
                 onClick={addSaleModalSetting}
               >
                 {/* <Link to="/inventory/add-product">Add Product</Link> */}
@@ -84,45 +194,45 @@ function Sales() {
               </button>
             </div>
           </div>
-          <table className="min-w-full divide-y-2 divide-gray-200 text-sm">
+          <table className="min-w-full divide-y-2 divide-slate-200/50 text-sm">
             <thead>
-              <tr>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+              <tr className="bg-slate-100/50">
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-slate-800">
                   Product Name
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-slate-800">
                   Store Name
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-slate-800">
                   Stock Sold
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-slate-800">
                   Sales Date
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-slate-800">
                   Total Sale Amount
                 </th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-slate-200/50">
               {sales.map((element, index) => {
                 return (
-                  <tr key={element._id}>
-                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                  <tr key={element._id} className="hover:bg-white/50 transition-colors duration-200">
+                    <td className="whitespace-nowrap px-4 py-2 text-slate-800 font-medium">
                       {element.ProductID?.name}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                    <td className="whitespace-nowrap px-4 py-2 text-slate-700">
                       {element.StoreID?.name}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                    <td className="whitespace-nowrap px-4 py-2 text-slate-700">
                       {element.StockSold}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.SaleDate}
+                    <td className="whitespace-nowrap px-4 py-2 text-slate-700">
+                      {element.SaleDate === new Date().toISOString().split('T')[0] ? 'Today' : element.SaleDate}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      ${element.TotalSaleAmount}
+                    <td className="whitespace-nowrap px-4 py-2 text-slate-700 font-semibold">
+                      ₹{element.TotalSaleAmount.toLocaleString('en-IN')}
                     </td>
                   </tr>
                 );

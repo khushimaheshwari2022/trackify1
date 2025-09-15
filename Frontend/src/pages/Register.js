@@ -11,6 +11,7 @@ function Register() {
     phoneNumber: "",
     imageUrl: "",
   });
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const navigate = useNavigate();
 
@@ -38,8 +39,7 @@ function Register() {
         return res.json();
       })
       .then((data) => {
-        alert("Successfully Registered! Please login with your details.");
-        navigate("/login"); // redirect after success
+        setShowSuccess(true);
       })
       .catch((err) => {
         console.error("Registration error:", err);
@@ -49,15 +49,15 @@ function Register() {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 h-screen items-center place-items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 h-screen items-center place-items-center bg-[#285181]">
         <div className="w-full max-w-md space-y-8 p-10 rounded-lg">
           <div>
             <img
               className="mx-auto h-12 w-auto"
-              src={require("../assets/logo.png")}
+              src={require("../assets/darklogo.png")}
               alt="Your Company"
             />
-            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-[#f1f2ea]">
               Register your account
             </h2>
           </div>
@@ -68,7 +68,7 @@ function Register() {
                   name="firstName"
                   type="text"
                   required
-                  className="relative block w-full rounded-t-md border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="relative block w-full rounded-xl border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder="First Name"
                   value={form.firstName}
                   onChange={handleInputChange}
@@ -77,7 +77,7 @@ function Register() {
                   name="lastName"
                   type="text"
                   required
-                  className="relative block w-full rounded-t-md border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="relative block w-full rounded-xl border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder="Last Name"
                   value={form.lastName}
                   onChange={handleInputChange}
@@ -90,7 +90,7 @@ function Register() {
                   type="email"
                   autoComplete="email"
                   required
-                  className="relative block w-full rounded-t-md border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="relative block w-full rounded-xl border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder="Email address"
                   value={form.email}
                   onChange={handleInputChange}
@@ -103,7 +103,7 @@ function Register() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  className="relative block w-full rounded-b-md border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="relative block w-full rounded-xl border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder="Password"
                   value={form.password}
                   onChange={handleInputChange}
@@ -115,7 +115,7 @@ function Register() {
                   type="number"
                   autoComplete="phoneNumber"
                   required
-                  className="relative block w-full rounded-b-md border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="relative block w-full rounded-xl border-0 py-1.5 px-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder="Phone Number"
                   value={form.phoneNumber}
                   onChange={handleInputChange}
@@ -134,40 +134,69 @@ function Register() {
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-900"
+                  className="ml-2 block text-sm text-[#f1f2ea]"
+
                 >
                   I Agree Terms & Conditions
                 </label>
               </div>
 
-              <div className="text-sm">
-                <span className="font-medium text-indigo-600 hover:text-indigo-500">
-                  Forgot your password?
-                </span>
-              </div>
             </div>
 
             <div>
               <button
                 type="submit"
-                className="group relative flex w-full justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="group relative flex w-full justify-center rounded-md bg-[#e98a4f] py-2 px-3 text-sm font-semibold text-white hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e98a4f]"
               >
                 Sign up
               </button>
               <p className="mt-2 text-center text-sm text-gray-600">
                 Or{" "}
-                <span className="font-medium text-indigo-600 hover:text-indigo-500">
-                  Already Have an Account?{" "}
-                  <Link to="/login"> Sign in now </Link>
+                <span className="font-medium text-[#e98a4f] hover:opacity-90">
+                  {" "}
+                  <Link to="/login">Already Have an Account? Sign in now </Link>
                 </span>
               </p>
             </div>
           </form>
         </div>
-        <div className="flex justify-center order-first sm:order-last">
-          <img src={require("../assets/Login.png")} alt="" />
+        <div className="flex justify-center order-first sm:order-last h-screen w-full relative">
+          <img className="m-0 h-full w-full object-cover" src={require("../assets/register.jpg")} alt="" />
+          <div className="absolute inset-0 bg-[#f1f2ea]/30" />
         </div>
       </div>
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="relative z-10 w-11/12 max-w-lg rounded-3xl bg-[#f1f2ea] p-8 shadow-2xl">
+            <button
+              type="button"
+              onClick={() => setShowSuccess(false)}
+              className="absolute right-3 top-3 text-[#285181] hover:opacity-80"
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <div className="text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#e98a4f]/15 relative">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-[#e98a4f]/20 animate-ping" />
+                <svg viewBox="0 0 24 24" className="relative z-10 h-8 w-8 text-[#e98a4f]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-semibold text-[#285181]">Registration successful!</h3>
+              <p className="mt-2 text-sm text-[#285181]">You have successfully registered as a user.</p>
+              <button
+                type="button"
+                onClick={() => navigate('/login')}
+                className="mt-6 w-full rounded-xl bg-[#e98a4f] py-2.5 px-4 text-white hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e98a4f]"
+              >
+                Go to Login Page
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

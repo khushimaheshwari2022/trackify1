@@ -11,23 +11,23 @@ export const data = {
     {
       label: "# of Votes",
       data: [0, 1, 5, 8, 9, 15],
-      backgroundColor: [
-        "rgba(255, 99, 132, 0.2)",
-        "rgba(54, 162, 235, 0.2)",
-        "rgba(255, 206, 86, 0.2)",
-        "rgba(75, 192, 192, 0.2)",
-        "rgba(153, 102, 255, 0.2)",
-        "rgba(255, 159, 64, 0.2)",
-      ],
       borderColor: [
-        "rgba(255, 99, 132, 1)",
-        "rgba(54, 162, 235, 1)",
-        "rgba(255, 206, 86, 1)",
-        "rgba(75, 192, 192, 1)",
-        "rgba(153, 102, 255, 1)",
-        "rgba(255, 159, 64, 1)",
+        "rgb(33, 6, 87)",
+        "rgb(232, 182, 116)",
+        "rgba(245, 158, 11, 1)",
+        "rgb(18, 11, 43)",
+        "rgb(203, 212, 178)",
+        "rgba(36, 35, 4, 0.74)",
       ],
-      borderWidth: 1,
+      backgroundColor: [
+        "rgb(33, 6, 87)",
+        "rgb(232, 182, 116)",
+        "rgba(245, 158, 11, 1)",
+        "rgb(18, 11, 43)",
+        "rgb(203, 212, 178)",
+        "rgba(36, 35, 4, 0.74)",
+      ],
+      borderWidth: 0,
     },
   ],
 };
@@ -42,7 +42,16 @@ function Dashboard() {
     options: {
       chart: {
         id: "basic-bar",
+        background: "transparent",
+        toolbar: {
+          show: false,
+        },
       },
+      theme: {
+        mode: "light",
+        palette: "palette1",
+      },
+      colors: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"],
       xaxis: {
         categories: [
           "Jan",
@@ -58,6 +67,33 @@ function Dashboard() {
           "Nov",
           "Dec",
         ],
+        labels: {
+          style: {
+            colors: "#64748b",
+            fontSize: "12px",
+            fontFamily: "Inter, sans-serif",
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          style: {
+            colors: "#64748b",
+            fontSize: "12px",
+            fontFamily: "Inter, sans-serif",
+          },
+        },
+      },
+      grid: {
+        borderColor: "#e2e8f0",
+        strokeDashArray: 4,
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: "smooth",
+        width: 3,
       },
     },
     series: [
@@ -134,9 +170,9 @@ function Dashboard() {
 
   return (
     <>
-      <div className="grid grid-cols-1 col-span-12 lg:col-span-10 gap-6 md:grid-cols-3 lg:grid-cols-4  p-4 ">
-        <article className="flex flex-col gap-4 rounded-lg border  border-gray-100 bg-white p-6  ">
-          <div className="inline-flex gap-2 self-end rounded bg-green-100 p-1 text-green-600">
+      <div className="grid grid-cols-1 col-span-12 lg:col-span-10 gap-4 md:grid-cols-3 lg:grid-cols-4 p-3 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-100 min-h-screen">
+        <article className="group flex flex-col gap-3 rounded-xl border border-slate-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-4 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-slate-300/50 backdrop-blur-sm">
+          <div className="inline-flex gap-2 self-end rounded-full bg-gradient-to-r from-emerald-100 to-green-100 p-2 text-emerald-700 shadow-sm">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -152,26 +188,26 @@ function Dashboard() {
               />
             </svg>
 
-            <span className="text-xs font-medium"> 67.81% </span>
+            <span className="text-xs font-semibold"> 67.81% </span>
           </div>
 
           <div>
-            <strong className="block text-sm font-medium text-gray-500">
+            <strong className="block text-sm font-semibold text-slate-600">
               Sales
             </strong>
 
             <p>
-              <span className="text-2xl font-medium text-gray-900">
+              <span className="text-2xl font-bold text-slate-900">
                 ${saleAmount}
               </span>
 
-              <span className="text-xs text-gray-500"> from $240.94 </span>
+              <span className="text-xs text-slate-500"> from $240.94 </span>
             </p>
           </div>
         </article>
 
-        <article className="flex flex-col  gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
+        <article className="group flex flex-col gap-3 rounded-xl border border-slate-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-4 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-slate-300/50 backdrop-blur-sm">
+          <div className="inline-flex gap-2 self-end rounded-full bg-gradient-to-r from-red-100 to-rose-100 p-2 text-red-700 shadow-sm">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -187,26 +223,26 @@ function Dashboard() {
               />
             </svg>
 
-            <span className="text-xs font-medium"> 67.81% </span>
+            <span className="text-xs font-semibold"> 67.81% </span>
           </div>
 
           <div>
-            <strong className="block text-sm font-medium text-gray-500">
+            <strong className="block text-sm font-semibold text-slate-600">
               Purchase
             </strong>
 
             <p>
-              <span className="text-2xl font-medium text-gray-900">
+              <span className="text-2xl font-bold text-slate-900">
                 {" "}
                 ${purchaseAmount}{" "}
               </span>
 
-              <span className="text-xs text-gray-500"> from $404.32 </span>
+              <span className="text-xs text-slate-500"> from $404.32 </span>
             </p>
           </div>
         </article>
-        <article className="flex flex-col   gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
+        <article className="group flex flex-col gap-3 rounded-xl border border-slate-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-4 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-slate-300/50 backdrop-blur-sm">
+          <div className="inline-flex gap-2 self-end rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 p-2 text-blue-700 shadow-sm">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -218,30 +254,30 @@ function Dashboard() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
               />
             </svg>
 
-            <span className="text-xs font-medium"> 67.81% </span>
+            <span className="text-xs font-semibold"> {products.length} </span>
           </div>
 
           <div>
-            <strong className="block text-sm font-medium text-gray-500">
+            <strong className="block text-sm font-semibold text-slate-600">
               Total Products
             </strong>
 
             <p>
-              <span className="text-2xl font-medium text-gray-900">
+              <span className="text-2xl font-bold text-slate-900">
                 {" "}
                 {products.length}{" "}
               </span>
 
-              {/* <span className="text-xs text-gray-500"> from $404.32 </span> */}
+              {/* <span className="text-xs text-slate-500"> from $404.32 </span> */}
             </p>
           </div>
         </article>
-        <article className="flex flex-col   gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
+        <article className="group flex flex-col gap-3 rounded-xl border border-slate-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-4 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-slate-300/50 backdrop-blur-sm">
+          <div className="inline-flex gap-2 self-end rounded-full bg-gradient-to-r from-purple-100 to-violet-100 p-2 text-purple-700 shadow-sm">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -253,30 +289,30 @@ function Dashboard() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
               />
             </svg>
 
-            <span className="text-xs font-medium"> 67.81% </span>
+            <span className="text-xs font-semibold"> {stores.length} </span>
           </div>
 
           <div>
-            <strong className="block text-sm font-medium text-gray-500">
+            <strong className="block text-sm font-semibold text-slate-600">
               Total Stores
             </strong>
 
             <p>
-              <span className="text-2xl font-medium text-gray-900">
+              <span className="text-2xl font-bold text-slate-900">
                 {" "}
                 {stores.length}{" "}
               </span>
 
-              {/* <span className="text-xs text-gray-500"> from 0 </span> */}
+              {/* <span className="text-xs text-slate-500"> from 0 </span> */}
             </p>
           </div>
         </article>
-        <div className="flex justify-around bg-white rounded-lg py-8 col-span-full justify-center">
-          <div>
+        <div className="group flex justify-around bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-xl py-6 col-span-full justify-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] border border-slate-200/50 backdrop-blur-sm">
+          <div className="transform group-hover:scale-105 transition-transform duration-300">
             <Chart
               options={chart.options}
               series={chart.series}
@@ -284,7 +320,7 @@ function Dashboard() {
               width="500"
             />
           </div>
-          <div>
+          <div className="transform group-hover:scale-105 transition-transform duration-300">
             <Doughnut data={data} />
           </div>
         </div>

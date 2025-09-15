@@ -24,7 +24,7 @@ export default function Header() {
   return (
     <>
       <div className="min-h-full">
-        <Disclosure as="nav" className="bg-gray-800">
+        <Disclosure as="nav" className="bg-[#285181]">
           {({ open }) => (
             <>
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -33,13 +33,11 @@ export default function Header() {
                     <div className="flex-shrink-0">
                       <div className="flex justify-center items-center gap-2">
                         <img
-                          className="h-8 w-8"
-                          src={require("../assets/logo.png")}
+                          className="h-10 w-22"
+                          src={require("../assets/darklogo.png")}
                           alt="Inventory Management System"
                         />
-                        <span className="font-bold text-white italic">
-                          Inventory Management
-                        </span>
+                        
                       </div>
                     </div>
                   </div>
@@ -47,7 +45,7 @@ export default function Header() {
                     <div className="ml-4 flex items-center md:ml-6">
                       <button
                         type="button"
-                        className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        className="rounded-full bg-[#264b73] p-1 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#264b73]"
                       >
                         <span className="sr-only">View notifications</span>
                         <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -56,7 +54,7 @@ export default function Header() {
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
-                          <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                          <Menu.Button className="flex max-w-xs items-center rounded-full bg-[#264b73] text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#264b73]">
                             <span className="sr-only">Open user menu</span>
                             <img
                               className="h-8 w-8 rounded-full"
@@ -99,7 +97,7 @@ export default function Header() {
                   </div>
                   <div className="-mr-2 flex md:hidden">
                     {/* Mobile menu button */}
-                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-[#264b73] p-2 text-gray-200 hover:bg-[#325a84] hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#264b73]">
                       <span className="sr-only">Open main menu</span>
                       {open ? (
                         <XMarkIcon
@@ -127,8 +125,8 @@ export default function Header() {
                         // href={item.href}
                         className={classNames(
                           item.current
-                            ? "bg-gray-900 text-white"
-                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                            ? "bg-[#1f3f63] text-white"
+                            : "text-gray-200 hover:bg-[#325a84] hover:text-white",
                           "block rounded-md px-3 py-2 text-base font-medium"
                         )}
                         aria-current={item.current ? "page" : undefined}
@@ -153,13 +151,13 @@ export default function Header() {
                           " " +
                           localStorageData.lastName}
                       </div>
-                      <div className="text-sm font-medium leading-none text-gray-400">
+                      <div className="text-sm font-medium leading-none text-gray-200">
                         {localStorageData.email}
                       </div>
                     </div>
                     <button
                       type="button"
-                      className="ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      className="ml-auto flex-shrink-0 rounded-full bg-[#264b73] p-1 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#264b73]"
                     >
                       <span className="sr-only">View notifications</span>
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -171,7 +169,7 @@ export default function Header() {
                         key={item.name}
                         as="a"
                         href={item.href}
-                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-200 hover:bg-[#325a84] hover:text-white"
                       >
                         <span onClick={() => authContext.signout()}>
                           {item.name}{" "}
