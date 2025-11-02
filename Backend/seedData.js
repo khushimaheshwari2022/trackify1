@@ -1,6 +1,6 @@
 require("dotenv").config(); // Load environment variables
 const Store = require("./models/store");
-const Product = require("./models/Product");
+const Product = require("./models/product");
 const Sales = require("./models/sales");
 const Purchase = require("./models/purchase");
 const User = require("./models/users");
