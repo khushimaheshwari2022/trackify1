@@ -1,0 +1,20 @@
+# Render Blueprint Configuration (Optional)
+# This file can be used to define your service as code
+# You can use this to recreate your service easily
+
+services:
+  - type: web
+    name: inventory-backend
+    env: node
+    region: oregon  # Change to your preferred region: oregon, frankfurt, singapore
+    plan: free      # Change to starter/professional for paid tier
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URL
+        sync: false  # Set this manually in Render dashboard with your MongoDB connection string
+      - key: FRONTEND_URL
+        sync: false  # Set this after deploying frontend to Vercel
+

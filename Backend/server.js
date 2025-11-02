@@ -16,9 +16,9 @@ const Product = require("./models/Product");
 
 const app = express();
 
-// Use PORT from environment (Render) or fallback to 4000
-// For local development, always use 4000 to match frontend
-const PORT = process.env.NODE_ENV === 'production' ? (process.env.PORT || 4000) : 4000;
+// Use PORT from environment (Render provides PORT automatically)
+// For local development, use 4000 to match frontend
+const PORT = process.env.PORT || 4000;
 
 // Connect to MongoDB (Atlas or local)
 main();
@@ -38,7 +38,35 @@ mongoose.connection.on('connected', () => {
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+
+// CORS configuration - Allow requests from frontend
+const allowedOrigins = [
+  'http://localhost:3000', // Local development
+  process.env.FRONTEND_URL  // Production frontend URL (set in Render)
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+    
+    // For development, allow all origins
+    if (process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    
+    // Check if origin is in allowed list or is a Vercel domain
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      origin.endsWith('.vercel.app');
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 // Routes
 app.use("/api/store", storeRoute);
