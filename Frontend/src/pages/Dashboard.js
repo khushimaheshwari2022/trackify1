@@ -5,38 +5,38 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-export const data = {
-  labels: ["Apple", "Knorr", "Shoop", "Green", "Purple", "Orange"],
-  datasets: [
-    {
-      label: "# of Votes",
-      data: [0, 1, 5, 8, 9, 15],
-      borderColor: [
-        "rgb(33, 6, 87)",
-        "rgb(232, 182, 116)",
-        "rgba(245, 158, 11, 1)",
-        "rgb(18, 11, 43)",
-        "rgb(203, 212, 178)",
-        "rgba(36, 35, 4, 0.74)",
-      ],
-      backgroundColor: [
-        "rgb(33, 6, 87)",
-        "rgb(232, 182, 116)",
-        "rgba(245, 158, 11, 1)",
-        "rgb(18, 11, 43)",
-        "rgb(203, 212, 178)",
-        "rgba(36, 35, 4, 0.74)",
-      ],
-      borderWidth: 0,
-    },
-  ],
-};
 
 function Dashboard() {
   const [saleAmount, setSaleAmount] = useState("");
   const [purchaseAmount, setPurchaseAmount] = useState("");
   const [stores, setStores] = useState([]);
   const [products, setProducts] = useState([]);
+  const [manufacturerData, setManufacturerData] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: "# of Products",
+        data: [],
+        borderColor: [
+          "rgb(33, 6, 87)",
+          "rgb(232, 182, 116)",
+          "rgba(245, 158, 11, 1)",
+          "rgb(18, 11, 43)",
+          "rgb(203, 212, 178)",
+          "rgba(36, 35, 4, 0.74)",
+        ],
+        backgroundColor: [
+          "rgb(33, 6, 87)",
+          "rgb(232, 182, 116)",
+          "rgba(245, 158, 11, 1)",
+          "rgb(18, 11, 43)",
+          "rgb(203, 212, 178)",
+          "rgba(36, 35, 4, 0.74)",
+        ],
+        borderWidth: 0,
+      },
+    ],
+  });
 
   const [chart, setChart] = useState({
     options: {
@@ -98,8 +98,8 @@ function Dashboard() {
     },
     series: [
       {
-        name: "series",
-        data: [10, 20, 40, 50, 60, 20, 10, 35, 45, 70, 25, 70],
+        name: "Monthly Sales Amount",
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       },
     ],
   });
@@ -156,7 +156,10 @@ function Dashboard() {
   const fetchProductsData = () => {
     fetch(`http://localhost:4000/api/product/get/${authContext.user}`)
       .then((response) => response.json())
-      .then((datas) => setProducts(datas))
+      .then((datas) => {
+        setProducts(datas);
+        updateManufacturerData(datas);
+      })
       .catch((err) => console.log(err));
   };
 
@@ -164,8 +167,50 @@ function Dashboard() {
   const fetchMonthlySalesData = () => {
     fetch(`http://localhost:4000/api/sales/getmonthly`)
       .then((response) => response.json())
-      .then((datas) => updateChartData(datas.salesAmount))
-      .catch((err) => console.log(err));
+      .then((datas) => updateChartData(datas.salesAmount || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+      .catch((err) => {
+        console.log(err);
+        updateChartData([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      });
+  };
+
+  // Update manufacturer data for doughnut chart
+  const updateManufacturerData = (productsData) => {
+    const manufacturerCounts = {};
+    productsData.forEach(product => {
+      const manufacturer = product.manufacturer || 'Unknown';
+      manufacturerCounts[manufacturer] = (manufacturerCounts[manufacturer] || 0) + 1;
+    });
+
+    const labels = Object.keys(manufacturerCounts);
+    const data = Object.values(manufacturerCounts);
+
+    setManufacturerData({
+      labels: labels,
+      datasets: [
+        {
+          label: "# of Products",
+          data: data,
+          borderColor: [
+            "rgb(33, 6, 87)",
+            "rgb(232, 182, 116)",
+            "rgba(245, 158, 11, 1)",
+            "rgb(18, 11, 43)",
+            "rgb(203, 212, 178)",
+            "rgba(36, 35, 4, 0.74)",
+          ],
+          backgroundColor: [
+            "rgb(33, 6, 87)",
+            "rgb(232, 182, 116)",
+            "rgba(245, 158, 11, 1)",
+            "rgb(18, 11, 43)",
+            "rgb(203, 212, 178)",
+            "rgba(36, 35, 4, 0.74)",
+          ],
+          borderWidth: 0,
+        },
+      ],
+    });
   };
 
   return (
@@ -188,7 +233,11 @@ function Dashboard() {
               />
             </svg>
 
-            <span className="text-xs font-semibold"> 67.81% </span>
+            <span className="text-xs font-semibold">
+              {purchaseAmount && saleAmount && parseFloat(purchaseAmount) > 0 
+                ? ((parseFloat(saleAmount) / parseFloat(purchaseAmount)) * 100).toFixed(2) + '%'
+                : '0%'}
+            </span>
           </div>
 
           <div>
@@ -198,10 +247,10 @@ function Dashboard() {
 
             <p>
               <span className="text-2xl font-bold text-slate-900">
-                ${saleAmount}
+                ₹{saleAmount ? parseFloat(saleAmount).toLocaleString('en-IN') : '0'}
               </span>
 
-              <span className="text-xs text-slate-500"> from $240.94 </span>
+              <span className="text-xs text-slate-500"> Total Revenue </span>
             </p>
           </div>
         </article>
@@ -223,7 +272,11 @@ function Dashboard() {
               />
             </svg>
 
-            <span className="text-xs font-semibold"> 67.81% </span>
+            <span className="text-xs font-semibold">
+              {purchaseAmount && saleAmount && parseFloat(saleAmount) > 0 
+                ? ((parseFloat(purchaseAmount) / parseFloat(saleAmount)) * 100).toFixed(2) + '%'
+                : '0%'}
+            </span>
           </div>
 
           <div>
@@ -234,10 +287,10 @@ function Dashboard() {
             <p>
               <span className="text-2xl font-bold text-slate-900">
                 {" "}
-                ${purchaseAmount}{" "}
+                ₹{purchaseAmount ? parseFloat(purchaseAmount).toLocaleString('en-IN') : '0'}{" "}
               </span>
 
-              <span className="text-xs text-slate-500"> from $404.32 </span>
+              <span className="text-xs text-slate-500"> Total Spent </span>
             </p>
           </div>
         </article>
@@ -321,7 +374,7 @@ function Dashboard() {
             />
           </div>
           <div className="transform group-hover:scale-105 transition-transform duration-300">
-            <Doughnut data={data} />
+            <Doughnut data={manufacturerData} />
           </div>
         </div>
       </div>

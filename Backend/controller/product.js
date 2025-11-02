@@ -10,6 +10,7 @@ const addProduct = (req, res) => {
     name: req.body.name,
     manufacturer: req.body.manufacturer,
     stock: 0,
+    price: req.body.price || 0,
     description: req.body.description,
   });
 
@@ -54,6 +55,7 @@ const updateSelectedProduct = async (req, res) => {
       {
         name: req.body.name,
         manufacturer: req.body.manufacturer,
+        price: req.body.price,
         description: req.body.description,
       },
       { new: true }
@@ -69,9 +71,14 @@ const updateSelectedProduct = async (req, res) => {
 // Search Products
 const searchProduct = async (req, res) => {
   const searchTerm = req.query.searchTerm;
-  const products = await Product.find({
+  const userId = req.query.userId;
+  const query = {
     name: { $regex: searchTerm, $options: "i" },
-  });
+  };
+  if (userId) {
+    query.userID = userId;
+  }
+  const products = await Product.find(query);
   res.json(products);
 };
 

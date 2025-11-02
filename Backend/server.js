@@ -1,43 +1,62 @@
+require("dotenv").config(); // Load environment variables
 const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
 const { main } = require("./models/index");
+
+// Routers
 const productRoute = require("./router/product");
 const storeRoute = require("./router/store");
 const purchaseRoute = require("./router/purchase");
 const salesRoute = require("./router/sales");
-const cors = require("cors");
+
+// Models
 const User = require("./models/users");
 const Product = require("./models/Product");
 
-
 const app = express();
-const PORT = 4000;
+
+// Use PORT from environment (Render) or fallback to 4000
+// For local development, always use 4000 to match frontend
+const PORT = process.env.NODE_ENV === 'production' ? (process.env.PORT || 4000) : 4000;
+
+// Connect to MongoDB (Atlas or local)
 main();
+
+// Add connection status logging
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected');
+});
+
+mongoose.connection.on('connected', () => {
+  console.log('MongoDB connection established');
+});
+
+// Middleware
 app.use(express.json());
 app.use(cors());
 
-// Store API
+// Routes
 app.use("/api/store", storeRoute);
-
-// Products API
 app.use("/api/product", productRoute);
-
-// Purchase API
 app.use("/api/purchase", purchaseRoute);
-
-// Sales API
 app.use("/api/sales", salesRoute);
 
-// ------------- Signin --------------
+// -------- Authentication APIs --------
 let userAuthCheck;
+
+// Login
 app.post("/api/login", async (req, res) => {
-  console.log(req.body);
-  // res.send("hi");
   try {
     const user = await User.findOne({
       email: req.body.email,
       password: req.body.password,
     });
-    console.log("USER: ", user);
+
     if (user) {
       res.send(user);
       userAuthCheck = user;
@@ -47,44 +66,71 @@ app.post("/api/login", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.send(error);
+    res.status(500).send(error);
   }
 });
 
-// Getting User Details of login user
+// Get logged-in user
 app.get("/api/login", (req, res) => {
   res.send(userAuthCheck);
 });
-// ------------------------------------
 
-// Registration API
-app.post("/api/register", (req, res) => {
-  let registerUser = new User({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    password: req.body.password,
-    phoneNumber: req.body.phoneNumber,
-  });
+// Registration
+app.post("/api/register", async (req, res) => {
+  try {
+    // Check if MongoDB is connected
+    if (mongoose.connection.readyState !== 1) {
+      console.error("MongoDB is not connected. Connection state:", mongoose.connection.readyState);
+      return res.status(503).json({ 
+        message: "Database connection not available. Please check your MongoDB connection." 
+      });
+    }
 
-  registerUser
-    .save()
-    .then((result) => {
-      res.status(200).send(result);
-      alert("Signup Successfull");
-    })
-    .catch((err) => console.log("Signup: ", err));
-  console.log("request: ", req.body);
+    const registerUser = new User({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      password: req.body.password,
+      phoneNumber: req.body.phoneNumber,
+    });
+
+    const result = await registerUser.save();
+    console.log("User registered successfully:", result.email);
+    res.status(200).send(result);
+  } catch (err) {
+    console.error("Signup Error: ", err);
+    
+    // Provide more specific error messages
+    if (err.code === 11000) {
+      // Duplicate key error (email already exists)
+      return res.status(400).json({ 
+        message: "Email already exists. Please use a different email." 
+      });
+    }
+    
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ 
+        message: "Validation error: " + Object.values(err.errors).map(e => e.message).join(', ') 
+      });
+    }
+
+    res.status(500).json({ 
+      message: err.message || "Failed to register user. Please try again." 
+    });
+  }
 });
 
+// Test route
+app.get("/testget", async (req, res) => {
+  try {
+    const result = await Product.findOne({ _id: "6429979b2e5434138eda1564" });
+    res.json(result);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
-app.get("/testget", async (req,res)=>{
-  const result = await Product.findOne({ _id: '6429979b2e5434138eda1564'})
-  res.json(result)
-
-})
-
-// Here we are listening to the server
+// Start server
 app.listen(PORT, () => {
-  console.log("I am live again");
+  console.log(`Server is live on port ${PORT}`);
 });

@@ -4,12 +4,12 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import UploadImage from "./UploadImage";
 import AuthContext from "../AuthContext";
 
-export default function AddStore() {
+export default function AddStore({ modalSetting, handlePageUpdate }) {
   const authContext = useContext(AuthContext);
   const [form, setForm] = useState({
     userId: authContext.user,
     name: "",
-    category: "",
+    category: "Electronics",
     address: "",
     city: "",
     image: "",
@@ -23,18 +23,70 @@ export default function AddStore() {
   const cancelButtonRef = useRef(null);
 
   const addProduct = () => {
+    // Validate required fields
+    if (!form.name || !form.city || !form.address || !form.category) {
+      alert("Please fill in all required fields (Name, City, Address, Category)");
+      return;
+    }
+
+    // Prepare data - exclude image if it's empty
+    const storeData = {
+      userId: form.userId,
+      name: form.name,
+      category: form.category,
+      address: form.address,
+      city: form.city,
+    };
+    
+    // Only include image if it's provided and not empty
+    if (form.image && form.image.trim() !== "") {
+      storeData.image = form.image;
+    }
+
     fetch("http://localhost:4000/api/store/add", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify(form),
+      body: JSON.stringify(storeData),
     })
       .then((result) => {
-        alert("STORE ADDED");
-        setOpen(false);
+        if (!result.ok) {
+          return result.json().then(err => {
+            throw new Error(err.message || 'Failed to add store');
+          });
+        }
+        return result.json();
       })
-      .catch((err) => console.log(err));
+      .then((data) => {
+        console.log("Store added successfully:", data);
+        alert("STORE ADDED");
+        // Close modal first
+        if (modalSetting) {
+          modalSetting();
+        } else {
+          setOpen(false);
+        }
+        // Reset form
+        setForm({
+          userId: authContext.user,
+          name: "",
+          category: "Electronics",
+          address: "",
+          city: "",
+          image: "",
+        });
+        // Then refresh the store list after a small delay to ensure DB is updated
+        setTimeout(() => {
+          if (handlePageUpdate) {
+            handlePageUpdate();
+          }
+        }, 300);
+      })
+      .catch((err) => {
+        console.error("Error adding store:", err);
+        alert(`Error adding store: ${err.message || 'Please try again.'}`);
+      });
   };
 
   // Uploading image to cloudinary
@@ -148,17 +200,12 @@ export default function AddStore() {
                             </label>
                             <select
                               id="category"
+                              name="category"
                               className="bg-white/80 border border-slate-300/50 text-slate-800 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block w-full p-2.5 shadow-sm"
-                              onChange={(e) =>
-                                setForm({
-                                  ...form,
-                                  category: e.target.value,
-                                })
-                              }
+                              value={form.category}
+                              onChange={handleInputChange}
                             >
-                              <option selected="" value="Electronics">
-                                Electronics
-                              </option>
+                              <option value="Electronics">Electronics</option>
                               <option value="Groceries">Groceries</option>
                               <option value="Wholesale">WholeSale</option>
                               <option value="SuperMart">SuperMart</option>
@@ -239,7 +286,13 @@ export default function AddStore() {
                   <button
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-lg bg-white/80 hover:bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300/50 hover:ring-slate-400/50 transition-all duration-200 sm:mt-0 sm:w-auto"
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      if (modalSetting) {
+                        modalSetting();
+                      } else {
+                        setOpen(false);
+                      }
+                    }}
                     ref={cancelButtonRef}
                   >
                     Cancel

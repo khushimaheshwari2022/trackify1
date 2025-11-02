@@ -7,73 +7,16 @@ function Inventory() {
   const [showProductModal, setShowProductModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [updateProduct, setUpdateProduct] = useState([]);
-  const [products, setAllProducts] = useState([
-    {
-      _id: "1",
-      name: "iPhone 15 Pro",
-      manufacturer: "Apple",
-      stock: 25,
-      description: "Latest iPhone with A17 Pro chip",
-      price: 82917
-    },
-    {
-      _id: "2", 
-      name: "Samsung Galaxy S24",
-      manufacturer: "Samsung",
-      stock: 18,
-      description: "Premium Android smartphone",
-      price: 74617
-    },
-    {
-      _id: "3",
-      name: "MacBook Air M3",
-      manufacturer: "Apple", 
-      stock: 12,
-      description: "Ultra-thin laptop with M3 chip",
-      price: 107817
-    },
-    {
-      _id: "5",
-      name: "Sony WH-1000XM5",
-      manufacturer: "Sony",
-      stock: 35,
-      description: "Noise-canceling wireless headphones",
-      price: 33117
-    },
-    {
-      _id: "6",
-      name: "iPad Pro 12.9",
-      manufacturer: "Apple",
-      stock: 0,
-      description: "Professional tablet with M2 chip",
-      price: 91217
-    },
-    {
-      _id: "8",
-      name: "Logitech MX Master 3",
-      manufacturer: "Logitech",
-      stock: 42,
-      description: "Wireless ergonomic mouse",
-      price: 8217
-    }
-  ]);
+  const [products, setAllProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState();
   const [updatePage, setUpdatePage] = useState(true);
-  const [stores, setAllStores] = useState([
-    { name: "Downtown Store", location: "123 Main St" },
-    { name: "Mall Location", location: "456 Oak Ave" },
-    { name: "Airport Kiosk", location: "Terminal 2" }
-  ]);
+  const [stores, setAllStores] = useState([]);
 
   const authContext = useContext(AuthContext);
-  console.log('====================================');
-  console.log(authContext);
-  console.log('====================================');
 
   useEffect(() => {
-    // Commented out API calls to show hardcoded data
-    // fetchProductsData();
-    // fetchSalesData();
+    fetchProductsData();
+    fetchSalesData();
   }, [updatePage]);
 
   // Fetching Data of All Products
@@ -88,12 +31,19 @@ function Inventory() {
 
   // Fetching Data of Search Products
   const fetchSearchData = () => {
-    fetch(`http://localhost:4000/api/product/search?searchTerm=${searchTerm}`)
+    if (!searchTerm || searchTerm.trim() === '') {
+      fetchProductsData();
+      return;
+    }
+    fetch(`http://localhost:4000/api/product/search?searchTerm=${searchTerm}&userId=${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
-        setAllProducts(data);
+        setAllProducts(data || []);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        fetchProductsData();
+      });
   };
 
   // Fetching all stores data
@@ -139,116 +89,12 @@ function Inventory() {
     const searchValue = e.target.value;
     setSearchTerm(searchValue);
     
-    // Filter hardcoded data instead of API call
     if (searchValue.trim() === '') {
-      // Reset to original hardcoded data
-      setAllProducts([
-        {
-          _id: "1",
-          name: "iPhone 15 Pro",
-          manufacturer: "Apple",
-          stock: 25,
-          description: "Latest iPhone with A17 Pro chip",
-          price: 82917
-        },
-        {
-          _id: "2", 
-          name: "Samsung Galaxy S24",
-          manufacturer: "Samsung",
-          stock: 18,
-          description: "Premium Android smartphone",
-          price: 74617
-        },
-        {
-          _id: "3",
-          name: "MacBook Air M3",
-          manufacturer: "Apple", 
-          stock: 12,
-          description: "Ultra-thin laptop with M3 chip",
-          price: 107817
-        },
-        {
-          _id: "4",
-          name: "Dell XPS 13",
-          manufacturer: "Dell",
-          stock: 8,
-          description: "High-performance business laptop",
-          price: 8217417
-        },
-        {
-          _id: "5",
-          name: "Sony WH-1000XM5",
-          manufacturer: "Sony",
-          stock: 35,
-          description: "Noise-canceling wireless headphones",
-          price: 33117
-        },
-        {
-          _id: "6",
-          name: "iPad Pro 12.9",
-          manufacturer: "Apple",
-          stock: 0,
-          description: "Professional tablet with M2 chip",
-          price: 91217
-        }
-      ]);
+      // Reset to all products
+      fetchProductsData();
     } else {
-      // Filter hardcoded data based on search term
-      const filteredProducts = [
-        {
-          _id: "1",
-          name: "iPhone 15 Pro",
-          manufacturer: "Apple",
-          stock: 25,
-          description: "Latest iPhone with A17 Pro chip",
-          price: 82917
-        },
-        {
-          _id: "2", 
-          name: "Samsung Galaxy S24",
-          manufacturer: "Samsung",
-          stock: 18,
-          description: "Premium Android smartphone",
-          price: 74617
-        },
-        {
-          _id: "3",
-          name: "MacBook Air M3",
-          manufacturer: "Apple", 
-          stock: 12,
-          description: "Ultra-thin laptop with M3 chip",
-          price: 107817
-        },
-        {
-          _id: "4",
-          name: "Dell XPS 13",
-          manufacturer: "Dell",
-          stock: 8,
-          description: "High-performance business laptop",
-          price: 8217417
-        },
-        {
-          _id: "5",
-          name: "Sony WH-1000XM5",
-          manufacturer: "Sony",
-          stock: 35,
-          description: "Noise-canceling wireless headphones",
-          price: 33117
-        },
-        {
-          _id: "6",
-          name: "iPad Pro 12.9",
-          manufacturer: "Apple",
-          stock: 0,
-          description: "Professional tablet with M2 chip",
-          price: 91217
-        }
-      ].filter(product => 
-        product.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-        product.manufacturer.toLowerCase().includes(searchValue.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchValue.toLowerCase())
-      );
-      setAllProducts(filteredProducts);
+      // Use API search
+      fetchSearchData();
     }
   };
 
@@ -279,15 +125,15 @@ function Inventory() {
                     {stores.length}
                   </span>
                   <span className="font-thin text-slate-500 text-xs">
-                    Last 7 days
+                    Total stores
                   </span>
                 </div>
                 <div className="flex flex-col">
                   <span className="font-semibold text-slate-700 text-base">
-                    ₹3,85,885
+                    ₹{products.reduce((sum, item) => sum + ((item.price || 0) * (item.stock || 0)), 0).toLocaleString('en-IN')}
                   </span>
                   <span className="font-thin text-slate-500 text-xs">
-                    Revenue
+                    Total Value
                   </span>
                 </div>
               </div>
@@ -299,17 +145,17 @@ function Inventory() {
               <div className="flex gap-4">
                 <div className="flex flex-col">
                   <span className="font-semibold text-slate-700 text-base">
-                    iPhone 15 Pro
+                    {products.length > 0 ? products.sort((a, b) => (b.price || 0) - (a.price || 0))[0]?.name || 'N/A' : 'N/A'}
                   </span>
                   <span className="font-thin text-slate-500 text-xs">
-                    Best Seller
+                    Highest Price
                   </span>
                 </div>
                 <div className="flex flex-col">
                   <span className="font-semibold text-slate-700 text-base">
-                    ₹82,917
+                    ₹{products.length > 0 ? (products.sort((a, b) => (b.price || 0) - (a.price || 0))[0]?.price || 0).toLocaleString('en-IN') : '0'}
                   </span>
-                  <span className="font-thin text-slate-500 text-xs">Total Value</span>
+                  <span className="font-thin text-slate-500 text-xs">Price</span>
                 </div>
               </div>
             </div>
@@ -320,7 +166,7 @@ function Inventory() {
               <div className="flex gap-4">
                 <div className="flex flex-col">
                   <span className="font-semibold text-slate-700 text-base">
-                    2
+                    {products.filter(p => (p.stock || 0) > 0 && (p.stock || 0) < 10).length}
                   </span>
                   <span className="font-thin text-slate-500 text-xs">
                     Low Stock
@@ -328,7 +174,7 @@ function Inventory() {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-semibold text-slate-700 text-base">
-                    1
+                    {products.filter(p => (p.stock || 0) === 0).length}
                   </span>
                   <span className="font-thin text-slate-500 text-xs">
                     Out of Stock
@@ -410,7 +256,14 @@ function Inventory() {
             </thead>
 
             <tbody className="divide-y divide-slate-200/50">
-              {products.map((element, index) => {
+              {products.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="px-4 py-8 text-center text-slate-500">
+                    No products found. Add your first product to get started.
+                  </td>
+                </tr>
+              ) : (
+                products.map((element, index) => {
                 return (
                   <tr key={element._id} className="hover:bg-white/50 transition-colors duration-200">
                     <td className="whitespace-nowrap px-4 py-2 text-slate-800 font-medium">
@@ -423,7 +276,7 @@ function Inventory() {
                       {element.stock}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-slate-700 font-semibold">
-                      ₹{element.price.toLocaleString('en-IN')}
+                      ₹{(element.price || 0).toLocaleString('en-IN')}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-slate-700">
                       {element.description}
@@ -447,7 +300,7 @@ function Inventory() {
                     </td>
                   </tr>
                 );
-              })}
+              }))}
             </tbody>
           </table>
         </div>

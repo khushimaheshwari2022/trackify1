@@ -4,59 +4,15 @@ import AuthContext from "../AuthContext";
 
 function PurchaseDetails() {
   const [showPurchaseModal, setPurchaseModal] = useState(false);
-  const [purchase, setAllPurchaseData] = useState([
-    {
-      _id: "1",
-      ProductID: { name: "iPhone 15 Pro" },
-      QuantityPurchased: 5,
-      PurchaseDate: "2025-01-15",
-      TotalPurchaseAmount: 414585
-    },
-    {
-      _id: "2",
-      ProductID: { name: "Samsung Galaxy S24" },
-      QuantityPurchased: 3,
-      PurchaseDate: "2025-01-14",
-      TotalPurchaseAmount: 223851
-    },
-    {
-      _id: "3",
-      ProductID: { name: "MacBook Air M3" },
-      QuantityPurchased: 2,
-      PurchaseDate: "2025-03-13",
-      TotalPurchaseAmount: 215634
-    },
-    {
-      _id: "4",
-      ProductID: { name: "Sony WH-1000XM5" },
-      QuantityPurchased: 8,
-      PurchaseDate: "2025-05-12",
-      TotalPurchaseAmount: 264936
-    },
-    {
-      _id: "5",
-      ProductID: { name: "iPad Pro 12.9" },
-      QuantityPurchased: 4,
-      PurchaseDate: "2025-05-11",
-      TotalPurchaseAmount: 364868
-    },
-    {
-      _id: "6",
-      ProductID: { name: "Logitech MX Master 3" },
-      QuantityPurchased: 12,
-      PurchaseDate: "2025-08-10",
-      TotalPurchaseAmount: 98604
-    }
-  ]);
+  const [purchase, setAllPurchaseData] = useState([]);
   const [products, setAllProducts] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
 
   const authContext = useContext(AuthContext);
 
   useEffect(() => {
-    // Commented out API calls to show hardcoded data
-    // fetchPurchaseData();
-    // fetchProductsData();
+    fetchPurchaseData();
+    fetchProductsData();
   }, [updatePage]);
 
   // Fetching Data of All Purchase items
@@ -133,7 +89,7 @@ function PurchaseDetails() {
                 Avg Purchase
               </span>
               <span className="font-semibold text-slate-700 text-base">
-                ₹{Math.round(purchase.reduce((sum, item) => sum + (item.TotalPurchaseAmount || 0), 0) / purchase.length).toLocaleString('en-IN')}
+                ₹{purchase.length > 0 ? Math.round(purchase.reduce((sum, item) => sum + (item.TotalPurchaseAmount || 0), 0) / purchase.length).toLocaleString('en-IN') : '0'}
               </span>
               <span className="font-thin text-slate-500 text-xs">
                 Per transaction
@@ -188,27 +144,34 @@ function PurchaseDetails() {
             </thead>
 
             <tbody className="divide-y divide-slate-200/50">
-              {purchase.map((element, index) => {
+              {purchase.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="px-4 py-8 text-center text-slate-500">
+                    No purchases found. Add your first purchase to get started.
+                  </td>
+                </tr>
+              ) : (
+                purchase.map((element, index) => {
                 return (
                   <tr key={element._id} className="hover:bg-white/50 transition-colors duration-200">
                     <td className="whitespace-nowrap px-4 py-2 text-slate-800 font-medium">
-                      {element.ProductID?.name}
+                      {element.ProductID?.name || 'N/A'}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-slate-700">
-                      {element.QuantityPurchased}
+                      {element.QuantityPurchased || 0}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-slate-700">
-                      {new Date(element.PurchaseDate).toLocaleDateString() ==
+                      {element.PurchaseDate && new Date(element.PurchaseDate).toLocaleDateString() ==
                       new Date().toLocaleDateString()
                         ? "Today"
-                        : element.PurchaseDate}
+                        : element.PurchaseDate || 'N/A'}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-slate-700 font-semibold">
-                      ₹{element.TotalPurchaseAmount?.toLocaleString('en-IN')}
+                      ₹{(element.TotalPurchaseAmount || 0).toLocaleString('en-IN')}
                     </td>
                   </tr>
                 );
-              })}
+              }))}
             </tbody>
           </table>
         </div>

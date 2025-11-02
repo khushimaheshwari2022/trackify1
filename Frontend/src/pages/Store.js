@@ -4,48 +4,35 @@ import AuthContext from "../AuthContext";
 
 function Store() {
   const [showModal, setShowModal] = useState(false);
-  const [stores, setAllStores] = useState([
-    {
-      _id: "1",
-      name: "Mumbai Central",
-      address: "123 MG Road, Fort",
-      city: "Mumbai",
-      image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=500&h=300&fit=crop"
-    },
-    {
-      _id: "2",
-      name: "Delhi NCR",
-      address: "456 Connaught Place",
-      city: "New Delhi",
-      image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=500&h=300&fit=crop"
-    },
-    {
-      _id: "3",
-      name: "Bangalore Tech",
-      address: "789 Brigade Road",
-      city: "Bangalore",
-      image: "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?w=500&h=300&fit=crop"
-    }
-  ]);
+  const [stores, setAllStores] = useState([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const authContext = useContext(AuthContext);
 
   useEffect(() => {
-    // Commented out API call to show hardcoded data
-    // fetchData();
-  }, []);
+    fetchData();
+  }, [refreshTrigger]);
 
   // Fetching all stores data
   const fetchData = () => {
     fetch(`http://localhost:4000/api/store/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
-        setAllStores(data);
+        setAllStores(data || []);
+      })
+      .catch((err) => {
+        console.log(err);
+        setAllStores([]);
       });
   };
 
   const modalSetting = () => {
     setShowModal(!showModal);
+  };
+
+  // Function to trigger refresh
+  const handleStoreAdded = () => {
+    setRefreshTrigger(prev => prev + 1);
   };
 
   return (
@@ -111,10 +98,15 @@ function Store() {
             Add Store
           </button>
         </div>
-        {showModal && <AddStore />}
+        {showModal && <AddStore modalSetting={modalSetting} handlePageUpdate={handleStoreAdded} />}
         {/* Store Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {stores.map((element, index) => {
+          {stores.length === 0 ? (
+            <div className="col-span-full text-center py-8 text-slate-500">
+              No stores found. Add your first store to get started.
+            </div>
+          ) : (
+            stores.map((element, index) => {
             return (
               <div
                 className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-slate-200/50 overflow-hidden"
@@ -124,7 +116,10 @@ function Store() {
                   <img
                     alt="store"
                     className="h-36 w-full object-cover"
-                    src={element.image}
+                    src={element.image || require("../assets/store-image.jpg")}
+                    onError={(e) => {
+                      e.target.src = require("../assets/store-image.jpg");
+                    }}
                   />
                   <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-semibold text-slate-700">
                     Store #{index + 1}
@@ -151,7 +146,7 @@ function Store() {
                 </div>
               </div>
             );
-          })}
+          }))}
         </div>
       </div>
     </div>

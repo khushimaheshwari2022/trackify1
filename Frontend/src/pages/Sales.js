@@ -4,64 +4,7 @@ import AuthContext from "../AuthContext";
 
 function Sales() {
   const [showSaleModal, setShowSaleModal] = useState(false);
-  const [sales, setAllSalesData] = useState([
-    {
-      _id: "1",
-      ProductID: { name: "iPhone 15 Pro" },
-      StoreID: { name: "Mumbai Central" },
-      StockSold: 3,
-      SaleDate: "2024-01-16",
-      TotalSaleAmount: 248751
-    },
-    {
-      _id: "2",
-      ProductID: { name: "Samsung Galaxy S24" },
-      StoreID: { name: "Delhi NCR" },
-      StockSold: 2,
-      SaleDate: "2024-01-15",
-      TotalSaleAmount: 149234
-    },
-    {
-      _id: "3",
-      ProductID: { name: "MacBook Air M3" },
-      StoreID: { name: "Bangalore Tech" },
-      StockSold: 1,
-      SaleDate: "2024-01-14",
-      TotalSaleAmount: 107817
-    },
-    {
-      _id: "4",
-      ProductID: { name: "Sony WH-1000XM5" },
-      StoreID: { name: "Chennai Plaza" },
-      StockSold: 5,
-      SaleDate: "2024-01-13",
-      TotalSaleAmount: 165585
-    },
-    {
-      _id: "5",
-      ProductID: { name: "iPad Pro 12.9" },
-      StoreID: { name: "Pune Mall" },
-      StockSold: 2,
-      SaleDate: "2024-01-12",
-      TotalSaleAmount: 182434
-    },
-    {
-      _id: "6",
-      ProductID: { name: "Logitech MX Master 3" },
-      StoreID: { name: "Hyderabad Hub" },
-      StockSold: 8,
-      SaleDate: "2024-01-11",
-      TotalSaleAmount: 65736
-    },
-    {
-      _id: "7",
-      ProductID: { name: "Dell XPS 13" },
-      StoreID: { name: "Kolkata Center" },
-      StockSold: 1,
-      SaleDate: "2024-01-10",
-      TotalSaleAmount: 124500
-    }
-  ]);
+  const [sales, setAllSalesData] = useState([]);
   const [products, setAllProducts] = useState([]);
   const [stores, setAllStores] = useState([]);
   const [updatePage, setUpdatePage] = useState(true);
@@ -69,10 +12,9 @@ function Sales() {
   const authContext = useContext(AuthContext);
 
   useEffect(() => {
-    // Commented out API calls to show hardcoded data
-    // fetchSalesData();
-    // fetchProductsData();
-    // fetchStoresData();
+    fetchSalesData();
+    fetchProductsData();
+    fetchStoresData();
   }, [updatePage]);
 
   // Fetching Data of All Sales
@@ -158,7 +100,7 @@ function Sales() {
                 Avg Sale
               </span>
               <span className="font-semibold text-slate-700 text-base">
-                ₹{Math.round(sales.reduce((sum, item) => sum + (item.TotalSaleAmount || 0), 0) / sales.length).toLocaleString('en-IN')}
+                ₹{sales.length > 0 ? Math.round(sales.reduce((sum, item) => sum + (item.TotalSaleAmount || 0), 0) / sales.length).toLocaleString('en-IN') : '0'}
               </span>
               <span className="font-thin text-slate-500 text-xs">
                 Per transaction
@@ -216,27 +158,34 @@ function Sales() {
             </thead>
 
             <tbody className="divide-y divide-slate-200/50">
-              {sales.map((element, index) => {
+              {sales.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="px-4 py-8 text-center text-slate-500">
+                    No sales found. Add your first sale to get started.
+                  </td>
+                </tr>
+              ) : (
+                sales.map((element, index) => {
                 return (
                   <tr key={element._id} className="hover:bg-white/50 transition-colors duration-200">
                     <td className="whitespace-nowrap px-4 py-2 text-slate-800 font-medium">
-                      {element.ProductID?.name}
+                      {element.ProductID?.name || 'N/A'}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-slate-700">
-                      {element.StoreID?.name}
+                      {element.StoreID?.name || 'N/A'}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-slate-700">
-                      {element.StockSold}
+                      {element.StockSold || 0}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-slate-700">
                       {element.SaleDate === new Date().toISOString().split('T')[0] ? 'Today' : element.SaleDate}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-slate-700 font-semibold">
-                      ₹{element.TotalSaleAmount.toLocaleString('en-IN')}
+                      ₹{(element.TotalSaleAmount || 0).toLocaleString('en-IN')}
                     </td>
                   </tr>
                 );
-              })}
+              }))}
             </tbody>
           </table>
         </div>
