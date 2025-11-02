@@ -1,6 +1,7 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import API_URL from "../config/api";
 
 export default function UpdateProduct({
   updateProductData,
@@ -22,7 +23,7 @@ export default function UpdateProduct({
   };
 
   const updateProduct = () => {
-    fetch("http://localhost:4000/api/product/update", {
+    fetch(`${API_URL}/api/product/update`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",

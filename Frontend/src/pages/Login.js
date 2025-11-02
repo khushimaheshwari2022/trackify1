@@ -2,6 +2,7 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../AuthContext";
+import API_URL from "../config/api";
 
 function Login() {
   const [form, setForm] = useState({
@@ -19,7 +20,7 @@ function Login() {
 
   const authCheck = () => {
     setTimeout(() => {
-      fetch("http://localhost:4000/api/login")
+      fetch(`${API_URL}/api/login`)
         .then((response) => response.json())
         .then((data) => {
           localStorage.setItem("user", JSON.stringify(data));
@@ -37,7 +38,7 @@ function Login() {
     if (form.email === "" || form.password === "") {
       alert("To login user, enter details to proceed...");
     } else {
-      fetch("http://localhost:4000/api/login", {
+      fetch(`${API_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",

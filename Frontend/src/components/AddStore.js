@@ -3,6 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import UploadImage from "./UploadImage";
 import AuthContext from "../AuthContext";
+import API_URL from "../config/api";
 
 export default function AddStore({ modalSetting, handlePageUpdate }) {
   const authContext = useContext(AuthContext);
@@ -43,7 +44,7 @@ export default function AddStore({ modalSetting, handlePageUpdate }) {
       storeData.image = form.image;
     }
 
-    fetch("http://localhost:4000/api/store/add", {
+    fetch(`${API_URL}/api/store/add`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
