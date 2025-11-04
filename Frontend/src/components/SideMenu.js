@@ -77,6 +77,17 @@ function SideMenu() {
             {expanded && <span className="text-sm font-medium"> Sales</span>}
           </Link>
 
+          <Link
+            to="/sales-prediction"
+            className="flex items-center gap-2 rounded-lg px-2 py-2 text-white/80 hover:bg-gradient-to-r hover:from-slate-700/80 hover:to-slate-600/80 hover:text-white transition-all duration-200 hover:shadow-lg hover:scale-105"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
+            </svg>
+            {expanded && <span className="text-sm font-medium"> Predictions</span>}
+          </Link>
+
           <details className="group [&_summary::-webkit-details-marker]:hidden">
             <summary className="flex cursor-pointer items-center justify-between rounded-lg px-2 py-2 text-white/80 hover:bg-gradient-to-r hover:from-slate-700/80 hover:to-slate-600/80 hover:text-white transition-all duration-200 hover:shadow-lg hover:scale-105">
               <Link to="/manage-store">

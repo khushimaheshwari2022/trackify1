@@ -9,8 +9,11 @@ app.post("/add", sales.addSales);
 app.get("/get/:userID", sales.getSalesData);
 app.get("/getmonthly", sales.getMonthlySales);
 
-
 app.get("/get/:userID/totalsaleamount", sales.getTotalSalesAmount);
+
+// Sales Prediction Routes
+app.get("/predict/:userID", sales.getSalesPrediction);
+app.get("/predict/:userID/product/:productID", sales.getProductSalesPrediction);
 
 module.exports = app;
 
