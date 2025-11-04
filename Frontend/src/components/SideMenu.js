@@ -18,7 +18,7 @@ function SideMenu() {
 
   return (
     <div
-      className={`h-full flex-col justify-between hidden lg:flex transition-all duration-300 ${expanded ? "w-64" : "w-16"} bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl`}
+      className={`h-screen flex flex-col justify-between transition-all duration-300 ${expanded ? "w-64" : "w-16"} bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >

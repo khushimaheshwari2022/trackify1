@@ -5,13 +5,15 @@ import SideMenu from "./SideMenu";
 function Layout() {
   return (
     <>
-      <div className="bg-gray-100 flex h-screen">
-        <div className="h-screen sticky top-0 hidden lg:flex">
+      <div className="bg-gray-100 min-h-screen">
+        {/* Fixed Sidebar - stays in place when scrolling */}
+        <aside className="fixed left-0 top-0 h-screen z-50 hidden lg:block">
           <SideMenu />
-        </div>
-        <div className="flex-1">
+        </aside>
+        {/* Main Content with left margin to account for fixed sidebar (collapsed width: 64px) */}
+        <main className="lg:ml-16 min-h-screen">
           <Outlet />
-        </div>
+        </main>
       </div>
     </>
   );

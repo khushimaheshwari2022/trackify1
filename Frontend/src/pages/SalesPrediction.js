@@ -111,16 +111,14 @@ function SalesPrediction() {
     },
     theme: {
       mode: "light",
-      palette: "palette1",
     },
-    colors: ["#3b82f6", "#10b981", "#f59e0b"],
+    colors: ["#3b82f6", "#10b981"],
     xaxis: {
       type: "datetime",
       labels: {
         style: {
           colors: "#64748b",
           fontSize: "12px",
-          fontFamily: "Inter, sans-serif",
         },
       },
     },
@@ -129,15 +127,8 @@ function SalesPrediction() {
         style: {
           colors: "#64748b",
           fontSize: "12px",
-          fontFamily: "Inter, sans-serif",
         },
         formatter: (value) => `₹${value.toLocaleString('en-IN')}`,
-      },
-      title: {
-        text: "Sales Amount (₹)",
-        style: {
-          color: "#64748b",
-        },
       },
     },
     grid: {
@@ -149,7 +140,7 @@ function SalesPrediction() {
     },
     stroke: {
       curve: "smooth",
-      width: 3,
+      width: 2,
     },
     legend: {
       position: "top",
@@ -159,10 +150,7 @@ function SalesPrediction() {
       },
     },
     markers: {
-      size: 5,
-      hover: {
-        size: 7,
-      },
+      size: 4,
     },
   };
 
@@ -170,79 +158,77 @@ function SalesPrediction() {
     {
       name: "Historical Sales",
       data: chartData.historical.map((item) => [new Date(item.x).getTime(), item.y]),
-      type: "line",
     },
     {
       name: "Predicted Sales",
       data: chartData.predicted.map((item) => [new Date(item.date).getTime(), item.predictedAmount]),
-      type: "line",
       strokeDashArray: 5,
     },
   ];
 
   return (
-    <div className="col-span-12 lg:col-span-10 flex justify-center bg-gradient-to-r from-slate-900 via-slate-800 to-slate-100 min-h-screen p-4">
-      <div className="w-full max-w-7xl">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-4xl font-bold text-white mb-2">Sales Predictions</h1>
-          <p className="text-slate-300">
-            AI-powered sales forecasting using linear regression
-          </p>
-        </div>
-
-        {/* Controls */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 mb-6 shadow-lg">
-          <div className="flex flex-wrap gap-4 items-center">
+    <div className="col-span-12 lg:col-span-10 flex justify-center bg-gradient-to-r from-slate-900 via-slate-800 to-slate-100 min-h-screen">
+      <div className="flex flex-col gap-4 w-11/12 p-3">
+        {/* Header Section */}
+        <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-xl p-4 shadow-lg">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Prediction Period (Days)
-              </label>
-              <select
-                value={predictionDays}
-                onChange={(e) => setPredictionDays(parseInt(e.target.value))}
-                className="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value={7}>7 days</option>
-                <option value={14}>14 days</option>
-                <option value={30}>30 days</option>
-              </select>
+              <h1 className="text-2xl font-semibold text-slate-800">Sales Predictions</h1>
+              <p className="text-sm text-slate-600 mt-1">AI-powered forecasting using linear regression</p>
             </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Filter by Product (Optional)
-              </label>
-              <select
-                value={selectedProduct || ""}
-                onChange={(e) => setSelectedProduct(e.target.value || null)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            
+            {/* Controls */}
+            <div className="flex flex-wrap gap-3 items-end">
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">
+                  Period
+                </label>
+                <select
+                  value={predictionDays}
+                  onChange={(e) => setPredictionDays(parseInt(e.target.value))}
+                  className="px-3 py-1.5 text-sm border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value={7}>7 days</option>
+                  <option value={14}>14 days</option>
+                  <option value={30}>30 days</option>
+                </select>
+              </div>
+              <div className="min-w-[180px]">
+                <label className="block text-xs font-medium text-slate-700 mb-1">
+                  Product
+                </label>
+                <select
+                  value={selectedProduct || ""}
+                  onChange={(e) => setSelectedProduct(e.target.value || null)}
+                  className="w-full px-3 py-1.5 text-sm border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">All Products</option>
+                  {products.map((product) => (
+                    <option key={product._id} value={product._id}>
+                      {product.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                onClick={fetchPredictions}
+                className="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
-                <option value="">All Products</option>
-                {products.map((product) => (
-                  <option key={product._id} value={product._id}>
-                    {product.name}
-                  </option>
-                ))}
-              </select>
+                Refresh
+              </button>
             </div>
-            <button
-              onClick={fetchPredictions}
-              className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Refresh Predictions
-            </button>
           </div>
         </div>
 
         {loading && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl p-8 text-center">
+          <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-xl p-8 text-center shadow-lg">
             <p className="text-slate-600">Loading predictions...</p>
           </div>
         )}
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
-            <p className="text-red-600">{error}</p>
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 shadow-lg">
+            <p className="text-red-600 text-sm">{error}</p>
           </div>
         )}
 
@@ -250,186 +236,183 @@ function SalesPrediction() {
           <>
             {/* Statistics Cards */}
             {statistics && !selectedProduct && (
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-lg">
-                  <h3 className="text-sm font-medium text-blue-700 mb-2">
-                    Average Historical
-                  </h3>
-                  <p className="text-2xl font-bold text-blue-900">
-                    ₹{statistics.averageHistoricalAmount?.toLocaleString('en-IN')}
-                  </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="flex flex-col gap-2 p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200/50 shadow-sm">
+                  <span className="font-semibold text-blue-600 text-sm">Avg Historical</span>
+                  <span className="font-semibold text-slate-700 text-lg">
+                    ₹{statistics.averageHistoricalAmount?.toLocaleString('en-IN') || '0'}
+                  </span>
                 </div>
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-lg">
-                  <h3 className="text-sm font-medium text-green-700 mb-2">
-                    Average Predicted
-                  </h3>
-                  <p className="text-2xl font-bold text-green-900">
-                    ₹{statistics.averagePredictedAmount?.toLocaleString('en-IN')}
-                  </p>
+                <div className="flex flex-col gap-2 p-4 bg-gradient-to-br from-green-50 to-emerald-100 rounded-lg border border-green-200/50 shadow-sm">
+                  <span className="font-semibold text-green-600 text-sm">Avg Predicted</span>
+                  <span className="font-semibold text-slate-700 text-lg">
+                    ₹{statistics.averagePredictedAmount?.toLocaleString('en-IN') || '0'}
+                  </span>
                 </div>
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 shadow-lg">
-                  <h3 className="text-sm font-medium text-purple-700 mb-2">
-                    Model Accuracy (R²)
-                  </h3>
-                  <p className="text-2xl font-bold text-purple-900">
+                <div className="flex flex-col gap-2 p-4 bg-gradient-to-br from-purple-50 to-violet-100 rounded-lg border border-purple-200/50 shadow-sm">
+                  <span className="font-semibold text-purple-600 text-sm">Accuracy</span>
+                  <span className="font-semibold text-slate-700 text-lg">
                     {(statistics.r2 * 100).toFixed(1)}%
-                  </p>
+                  </span>
                 </div>
-                <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-6 shadow-lg">
-                  <h3 className="text-sm font-medium text-amber-700 mb-2">
-                    Trend
-                  </h3>
-                  <p className="text-2xl font-bold text-amber-900">
-                    {statistics.slope > 0 ? "↗️ Growing" : statistics.slope < 0 ? "↘️ Declining" : "→ Stable"}
-                  </p>
+                <div className="flex flex-col gap-2 p-4 bg-gradient-to-br from-amber-50 to-yellow-100 rounded-lg border border-amber-200/50 shadow-sm">
+                  <span className="font-semibold text-amber-600 text-sm">Trend</span>
+                  <span className="font-semibold text-slate-700 text-lg">
+                    {statistics.slope > 0 ? "↗ Growing" : statistics.slope < 0 ? "↘ Declining" : "→ Stable"}
+                  </span>
                 </div>
               </div>
             )}
 
-            {/* Main Chart */}
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 mb-6 shadow-lg">
-              <h2 className="text-2xl font-semibold text-slate-800 mb-4">
+            {/* Chart Section */}
+            <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-xl p-4 shadow-lg">
+              <h2 className="text-lg font-semibold text-slate-800 mb-4 px-2">
                 {selectedProduct 
-                  ? `Sales Prediction: ${products.find(p => p._id === selectedProduct)?.name || 'Product'}`
-                  : "Overall Sales Prediction"}
+                  ? `${products.find(p => p._id === selectedProduct)?.name || 'Product'} Sales Forecast`
+                  : "Overall Sales Forecast"}
               </h2>
               {chartData.historical.length > 0 || predictions.length > 0 ? (
-                <Chart
-                  options={chartOptions}
-                  series={selectedProduct && productPredictions 
-                    ? [
-                        {
-                          name: "Historical Quantity",
-                          data: (productPredictions.historicalData || []).map((item) => [
-                            new Date(item.date).getTime(),
-                            item.quantity,
-                          ]),
-                          type: "line",
-                        },
-                        {
-                          name: "Predicted Quantity",
-                          data: (productPredictions.predictions || []).map((item) => [
-                            new Date(item.date).getTime(),
-                            item.predictedQuantity,
-                          ]),
-                          type: "line",
-                          strokeDashArray: 5,
-                        },
-                      ]
-                    : chartSeries
-                  }
-                  type="line"
-                  height={400}
-                />
+                <div className="bg-white rounded-lg p-4">
+                  <Chart
+                    options={chartOptions}
+                    series={selectedProduct && productPredictions 
+                      ? [
+                          {
+                            name: "Historical Quantity",
+                            data: (productPredictions.historicalData || []).map((item) => [
+                              new Date(item.date).getTime(),
+                              item.quantity,
+                            ]),
+                          },
+                          {
+                            name: "Predicted Quantity",
+                            data: (productPredictions.predictions || []).map((item) => [
+                              new Date(item.date).getTime(),
+                              item.predictedQuantity,
+                            ]),
+                            strokeDashArray: 5,
+                          },
+                        ]
+                      : chartSeries
+                    }
+                    type="line"
+                    height={350}
+                  />
+                </div>
               ) : (
-                <p className="text-slate-500 text-center py-8">
-                  Insufficient data for prediction. Add more sales records to see predictions.
-                </p>
+                <div className="bg-white rounded-lg p-8 text-center">
+                  <p className="text-slate-500">
+                    Insufficient data for prediction. Add more sales records to see predictions.
+                  </p>
+                </div>
               )}
             </div>
 
             {/* Predictions Table */}
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-lg">
-              <h2 className="text-2xl font-semibold text-slate-800 mb-4">
-                Detailed Predictions
-              </h2>
+            <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-xl p-4 shadow-lg">
+              <h2 className="text-lg font-semibold text-slate-800 mb-4 px-2">Detailed Predictions</h2>
               {selectedProduct && productPredictions ? (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-slate-200">
-                    <thead className="bg-slate-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
-                          Predicted Quantity
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
-                          Confidence
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-slate-200">
-                      {productPredictions.predictions?.map((prediction, index) => (
-                        <tr key={index} className="hover:bg-slate-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                            {new Date(prediction.date).toLocaleDateString('en-IN', {
-                              weekday: 'short',
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric'
-                            })}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
-                            {prediction.predictedQuantity?.toFixed(2) || 'N/A'} units
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                            <div className="flex items-center">
-                              <div className="w-24 bg-slate-200 rounded-full h-2 mr-2">
-                                <div
-                                  className="bg-green-500 h-2 rounded-full"
-                                  style={{ width: `${prediction.confidence}%` }}
-                                ></div>
-                              </div>
-                              <span>{prediction.confidence?.toFixed(0)}%</span>
-                            </div>
-                          </td>
+                <div className="bg-white rounded-lg overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-slate-200">
+                      <thead className="bg-slate-50">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                            Date
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                            Quantity
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                            Confidence
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-slate-200">
+                        {productPredictions.predictions?.map((prediction, index) => (
+                          <tr key={index} className="hover:bg-slate-50">
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900">
+                              {new Date(prediction.date).toLocaleDateString('en-IN', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
+                              })}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900">
+                              {prediction.predictedQuantity?.toFixed(1) || 'N/A'} units
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
+                              <div className="flex items-center gap-2">
+                                <div className="w-20 bg-slate-200 rounded-full h-1.5">
+                                  <div
+                                    className="bg-green-500 h-1.5 rounded-full"
+                                    style={{ width: `${prediction.confidence}%` }}
+                                  ></div>
+                                </div>
+                                <span className="text-xs">{prediction.confidence?.toFixed(0)}%</span>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-slate-200">
-                    <thead className="bg-slate-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
-                          Predicted Amount
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
-                          Confidence
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-slate-200">
-                      {predictions.map((prediction, index) => (
-                        <tr key={index} className="hover:bg-slate-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                            {new Date(prediction.date).toLocaleDateString('en-IN', {
-                              weekday: 'short',
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric'
-                            })}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
-                            ₹{prediction.predictedAmount?.toLocaleString('en-IN')}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                            <div className="flex items-center">
-                              <div className="w-24 bg-slate-200 rounded-full h-2 mr-2">
-                                <div
-                                  className="bg-green-500 h-2 rounded-full"
-                                  style={{ width: `${prediction.confidence}%` }}
-                                ></div>
-                              </div>
-                              <span>{prediction.confidence?.toFixed(0)}%</span>
-                            </div>
-                          </td>
+                <div className="bg-white rounded-lg overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-slate-200">
+                      <thead className="bg-slate-50">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                            Date
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                            Amount
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                            Confidence
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-slate-200">
+                        {predictions.length > 0 ? (
+                          predictions.map((prediction, index) => (
+                            <tr key={index} className="hover:bg-slate-50">
+                              <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900">
+                                {new Date(prediction.date).toLocaleDateString('en-IN', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                  year: 'numeric'
+                                })}
+                              </td>
+                              <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900">
+                                ₹{prediction.predictedAmount?.toLocaleString('en-IN') || '0'}
+                              </td>
+                              <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-20 bg-slate-200 rounded-full h-1.5">
+                                    <div
+                                      className="bg-green-500 h-1.5 rounded-full"
+                                      style={{ width: `${prediction.confidence}%` }}
+                                    ></div>
+                                  </div>
+                                  <span className="text-xs">{prediction.confidence?.toFixed(0)}%</span>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="3" className="px-4 py-8 text-center text-slate-500 text-sm">
+                              No predictions available. Add more sales data to generate predictions.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              )}
-              {(!predictions || predictions.length === 0) && !selectedProduct && (
-                <p className="text-slate-500 text-center py-4">
-                  No predictions available. Add more sales data to generate predictions.
-                </p>
               )}
             </div>
           </>
