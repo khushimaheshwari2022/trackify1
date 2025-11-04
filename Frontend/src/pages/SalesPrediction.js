@@ -101,39 +101,65 @@ function SalesPrediction() {
   const chartOptions = {
     chart: {
       id: "sales-prediction",
-      background: "transparent",
+      background: "#1e293b",
       toolbar: {
         show: true,
+        tools: {
+          download: true,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true,
+        },
       },
       zoom: {
         enabled: true,
       },
     },
     theme: {
-      mode: "light",
+      mode: "dark",
+      palette: "palette1",
     },
-    colors: ["#3b82f6", "#10b981"],
+    colors: ["#60a5fa", "#34d399"],
     xaxis: {
       type: "datetime",
       labels: {
         style: {
-          colors: "#64748b",
+          colors: "#cbd5e1",
           fontSize: "12px",
         },
+      },
+      axisBorder: {
+        color: "#475569",
+      },
+      axisTicks: {
+        color: "#475569",
       },
     },
     yaxis: {
       labels: {
         style: {
-          colors: "#64748b",
+          colors: "#cbd5e1",
           fontSize: "12px",
         },
         formatter: (value) => `₹${value.toLocaleString('en-IN')}`,
       },
     },
     grid: {
-      borderColor: "#e2e8f0",
+      borderColor: "#475569",
       strokeDashArray: 4,
+      xaxis: {
+        lines: {
+          show: true,
+        },
+      },
+      yaxis: {
+        lines: {
+          show: true,
+        },
+      },
     },
     dataLabels: {
       enabled: false,
@@ -146,11 +172,14 @@ function SalesPrediction() {
       position: "top",
       horizontalAlign: "right",
       labels: {
-        colors: "#64748b",
+        colors: "#cbd5e1",
       },
     },
     markers: {
       size: 4,
+    },
+    tooltip: {
+      theme: "dark",
     },
   };
 
@@ -272,7 +301,7 @@ function SalesPrediction() {
                   : "Overall Sales Forecast"}
               </h2>
               {chartData.historical.length > 0 || predictions.length > 0 ? (
-                <div className="bg-white rounded-lg p-4">
+                <div className="bg-slate-800 rounded-lg p-4">
                   <Chart
                     options={chartOptions}
                     series={selectedProduct && productPredictions 
@@ -300,8 +329,8 @@ function SalesPrediction() {
                   />
                 </div>
               ) : (
-                <div className="bg-white rounded-lg p-8 text-center">
-                  <p className="text-slate-500">
+                <div className="bg-slate-800 rounded-lg p-8 text-center">
+                  <p className="text-slate-400">
                     Insufficient data for prediction. Add more sales records to see predictions.
                   </p>
                 </div>
@@ -312,40 +341,40 @@ function SalesPrediction() {
             <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-xl p-4 shadow-lg">
               <h2 className="text-lg font-semibold text-slate-800 mb-4 px-2">Detailed Predictions</h2>
               {selectedProduct && productPredictions ? (
-                <div className="bg-white rounded-lg overflow-hidden">
+                <div className="bg-slate-800 rounded-lg overflow-hidden">
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-slate-200">
-                      <thead className="bg-slate-50">
+                    <table className="min-w-full divide-y divide-slate-700">
+                      <thead className="bg-slate-700">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
                             Date
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
                             Quantity
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
                             Confidence
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-slate-200">
+                      <tbody className="bg-slate-800 divide-y divide-slate-700">
                         {productPredictions.predictions?.map((prediction, index) => (
-                          <tr key={index} className="hover:bg-slate-50">
-                            <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900">
+                          <tr key={index} className="hover:bg-slate-700/50 transition-colors">
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-200">
                               {new Date(prediction.date).toLocaleDateString('en-IN', {
                                 day: 'numeric',
                                 month: 'short',
                                 year: 'numeric'
                               })}
                             </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900">
+                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-100">
                               {prediction.predictedQuantity?.toFixed(1) || 'N/A'} units
                             </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-300">
                               <div className="flex items-center gap-2">
-                                <div className="w-20 bg-slate-200 rounded-full h-1.5">
+                                <div className="w-20 bg-slate-600 rounded-full h-1.5">
                                   <div
-                                    className="bg-green-500 h-1.5 rounded-full"
+                                    className="bg-green-400 h-1.5 rounded-full"
                                     style={{ width: `${prediction.confidence}%` }}
                                   ></div>
                                 </div>
@@ -359,41 +388,41 @@ function SalesPrediction() {
                   </div>
                 </div>
               ) : (
-                <div className="bg-white rounded-lg overflow-hidden">
+                <div className="bg-slate-800 rounded-lg overflow-hidden">
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-slate-200">
-                      <thead className="bg-slate-50">
+                    <table className="min-w-full divide-y divide-slate-700">
+                      <thead className="bg-slate-700">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
                             Date
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
                             Amount
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
                             Confidence
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-slate-200">
+                      <tbody className="bg-slate-800 divide-y divide-slate-700">
                         {predictions.length > 0 ? (
                           predictions.map((prediction, index) => (
-                            <tr key={index} className="hover:bg-slate-50">
-                              <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900">
+                            <tr key={index} className="hover:bg-slate-700/50 transition-colors">
+                              <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-200">
                                 {new Date(prediction.date).toLocaleDateString('en-IN', {
                                   day: 'numeric',
                                   month: 'short',
                                   year: 'numeric'
                                 })}
                               </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900">
+                              <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-100">
                                 ₹{prediction.predictedAmount?.toLocaleString('en-IN') || '0'}
                               </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
+                              <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-300">
                                 <div className="flex items-center gap-2">
-                                  <div className="w-20 bg-slate-200 rounded-full h-1.5">
+                                  <div className="w-20 bg-slate-600 rounded-full h-1.5">
                                     <div
-                                      className="bg-green-500 h-1.5 rounded-full"
+                                      className="bg-green-400 h-1.5 rounded-full"
                                       style={{ width: `${prediction.confidence}%` }}
                                     ></div>
                                   </div>
@@ -404,7 +433,7 @@ function SalesPrediction() {
                           ))
                         ) : (
                           <tr>
-                            <td colSpan="3" className="px-4 py-8 text-center text-slate-500 text-sm">
+                            <td colSpan="3" className="px-4 py-8 text-center text-slate-400 text-sm">
                               No predictions available. Add more sales data to generate predictions.
                             </td>
                           </tr>
